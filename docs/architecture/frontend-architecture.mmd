@@ -1,0 +1,59 @@
+flowchart LR
+  mainTsx[main.tsx] --> appTsx[App.tsx]
+
+  appTsx --> router[React Router]
+
+  router --> docsPage[DocumentsPage]
+  router --> docDetailPage[DocumentDetailPage]
+  router --> alertsPage[LiveAlertsPage]
+
+  subgraph Layout
+    layoutComp[AppLayout]
+    navbar[Navbar]
+    sidebar[Sidebar]
+  end
+
+  docsPage --> layoutComp
+  docDetailPage --> layoutComp
+  alertsPage --> layoutComp
+  layoutComp --> navbar
+  layoutComp --> sidebar
+
+  subgraph DocumentsComponents
+    docList[DocumentList]
+    docUpload[DocumentUpload]
+  end
+
+  docsPage --> docList
+  docsPage --> docUpload
+
+  subgraph DetailComponents
+    txnTable[DocumentTransactionsTable]
+    aiPanel[AiExplanationPanel]
+    riskBadge[RiskBadge]
+  end
+
+  docDetailPage --> txnTable
+  docDetailPage --> aiPanel
+  docDetailPage --> riskBadge
+
+  subgraph AlertsComponents
+    alertList[AlertList]
+    alertFilters[AlertFilters]
+  end
+
+  alertsPage --> alertList
+  alertsPage --> alertFilters
+
+  subgraph ApiLayer["API Client Layer"]
+    apiClient[api/client.ts]
+    apiDocs[api/documents.ts]
+    apiTxns[api/transactions.ts]
+    apiAi[api/ai.ts]
+  end
+
+  docsPage --> apiDocs
+  docDetailPage --> apiDocs
+  docDetailPage --> apiTxns
+  docDetailPage --> apiAi
+  alertsPage --> apiTxns

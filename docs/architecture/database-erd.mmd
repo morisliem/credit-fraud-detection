@@ -1,0 +1,84 @@
+erDiagram
+  USER {
+    string id
+    string email
+    string passwordHash
+    datetime createdAt
+  }
+
+  DOCUMENT {
+    string id
+    string userId
+    string originalFilename
+    string storagePath
+    string docType
+    datetime uploadedAt
+    datetime parsedAt
+  }
+
+  DOCUMENT_TRANSACTION {
+    string id
+    string documentId
+    datetime txnDate
+    string description
+    float amount
+    string currency
+    string txnType
+    string category
+  }
+
+  LIVE_TRANSACTION {
+    string id
+    string accountId
+    string source
+    datetime txnTime
+    float amount
+    string currency
+    string description
+    json featuresJson
+    datetime ingestedAt
+  }
+
+  ANOMALY_EVENT {
+    string id
+    string sourceType
+    string documentId
+    string liveTxnId
+    string accountId
+    float anomalyScore
+    string severity
+    string reason
+    datetime createdAt
+  }
+
+  DOCUMENT_RISK_SUMMARY {
+    string documentId
+    string overallRisk
+    int numAnomalies
+    float totalAmountFlagged
+    datetime lastUpdated
+  }
+
+  AI_CONVERSATION {
+    string id
+    string userId
+    string documentId
+    datetime createdAt
+  }
+
+  AI_MESSAGE {
+    string id
+    string conversationId
+    string role
+    string content
+    datetime createdAt
+  }
+
+  USER ||--o{ DOCUMENT : "owns"
+  DOCUMENT ||--o{ DOCUMENT_TRANSACTION : "contains"
+  DOCUMENT ||--o| DOCUMENT_RISK_SUMMARY : "has summary"
+  DOCUMENT ||--o{ ANOMALY_EVENT : "has anomalies"
+  LIVE_TRANSACTION ||--o{ ANOMALY_EVENT : "can trigger"
+  USER ||--o{ AI_CONVERSATION : "starts"
+  DOCUMENT ||--o{ AI_CONVERSATION : "context"
+  AI_CONVERSATION ||--o{ AI_MESSAGE : "includes"

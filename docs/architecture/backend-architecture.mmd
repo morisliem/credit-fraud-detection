@@ -1,0 +1,73 @@
+flowchart LR
+  subgraph NestApp["NestJS Application"]
+    main[AppModule]
+
+    subgraph Modules
+      prismaMod[PrismaModule]
+      authMod[AuthModule]
+      usersMod[UsersModule]
+      docsMod[DocumentsModule]
+      txnMod[TransactionsModule]
+      anomMod[AnomaliesModule]
+      aiMod[AiAssistantModule]
+      streamMod[StreamingModule]
+    end
+
+    subgraph Services
+      prismaSvc[PrismaService]
+      userSvc[UsersService]
+      docSvc[DocumentsService]
+      txnSvc[TransactionsService]
+      anomSvc[AnomaliesService]
+      aiSvc[AiAssistantService]
+      kafkaSvc[KafkaService]
+    end
+
+    subgraph Controllers
+      authCtrl[AuthController]
+      usersCtrl[UsersController]
+      docsCtrl[DocumentsController]
+      txnCtrl[TransactionsController]
+      anomCtrl[AnomaliesController]
+      aiCtrl[AiAssistantController]
+    end
+  end
+
+  subgraph Infra["Infra"]
+    db[(PostgreSQL)]
+    kafka[(Kafka)]
+  end
+
+  main --> prismaMod
+  main --> authMod
+  main --> usersMod
+  main --> docsMod
+  main --> txnMod
+  main --> anomMod
+  main --> aiMod
+  main --> streamMod
+
+  prismaMod --> prismaSvc
+  usersMod --> userSvc
+  docsMod --> docSvc
+  txnMod --> txnSvc
+  anomMod --> anomSvc
+  aiMod --> aiSvc
+  streamMod --> kafkaSvc
+
+  authMod --> authCtrl
+  usersMod --> usersCtrl
+  docsMod --> docsCtrl
+  txnMod --> txnCtrl
+  anomMod --> anomCtrl
+  aiMod --> aiCtrl
+
+  prismaSvc --> db
+  userSvc --> prismaSvc
+  docSvc --> prismaSvc
+  txnSvc --> prismaSvc
+  anomSvc --> prismaSvc
+  aiSvc --> prismaSvc
+
+  kafkaSvc --> kafka
+  streamMod --> kafka

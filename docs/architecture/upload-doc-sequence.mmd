@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant User
+    participant Frontend as React Frontend
+    participant API as NestJS API
+    participant DocSvc as Documents Service
+    participant StreamMod as Streaming Module<br/>(Kafka Producer)
+    participant Kafka as Kafka (documents_uploaded)
+    participant Parser as Doc Parser Consumer
+    participant DB as PostgreSQL
+    participant AnomSvc as Anomalies Service
+    participant AISvc as AI Assistant Service
+    participant LLM as LLM Provider
+
+    User->>Frontend: Select PDF & click Upload
+    Frontend->>API: POST /documents/upload (multipart)
+    API->>DocSvc: validate + save metadata + file
+    DocSvc->>DB: insert into documents
+    DocSvc->>StreamMod: publish documents_uploaded event
+    StreamMod->>Kafka: documents_uploaded
+
+    Kafka-->>Parser: consume documents_uploaded
+    Parser->>DB: insert rows into document_transactions
+    Parser->>AnomSvc: (sync call or via message) trigger anomaly computation
+    AnomSvc->>DB: read transactions for document
+    AnomSvc->>DB: insert anomaly_events + update document_risk_summary
+
+    User->>Frontend: Open document detail page
+    Frontend->>API: GET /documents/{id} + /documents/{id}/anomalies
+    API->>DB: read document + transactions + anomalies
+    API-->>Frontend: JSON response (doc, txns, anomalies)
+
+    User->>Frontend: Click "Explain anomalies"
+    Frontend->>API: POST /ai/explain-document/{id}
+    API->>AISvc: build context (doc + anomalies + stats)
+    AISvc->>LLM: send prompt
+    LLM-->>AISvc: explanation text
+    AISvc-->>Frontend: explanation
+    Frontend-->>User: render explanation in AI panel

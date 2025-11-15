@@ -1,0 +1,67 @@
+flowchart LR
+  subgraph Client["Client (Browser)"]
+    uiDocs["React Frontend - Documents & Live Alerts UI"]
+  end
+
+  subgraph Backend["Backend (NestJS + TypeScript)"]
+    apiGateway["REST API Layer (Controllers)"]
+    docSvc["Documents Service (upload, list, detail)"]
+    txnSvc["Transactions Service (live + document txns)"]
+    anomSvc["Anomalies Service (risk scoring, queries)"]
+    aiSvc["AI Assistant Service (prompt builder + LLM call)"]
+    streamMod["Streaming Module (Kafka producers/consumers)"]
+  end
+
+  subgraph Infra_DB["Data Layer (PostgreSQL)"]
+    dbUsers["users"]
+    dbDocs["documents"]
+    dbDocTxn["document_transactions"]
+    dbLiveTxn["live_transactions"]
+    dbAnom["anomaly_events"]
+    dbRisk["document_risk_summary"]
+    dbAi["ai_conversation / ai_message (optional)"]
+  end
+
+  subgraph Infra_Stream["Streaming Layer (Kafka)"]
+    topicDocUp["documents_uploaded"]
+    topicTxnRaw["transactions_raw"]
+    topicTxnFeat["transactions_features"]
+    topicFraud["fraud_alerts (optional)"]
+  end
+
+  subgraph External_AI["External AI Provider"]
+    llm["LLM / Chat Completion API"]
+  end
+
+  %% Edges
+
+  uiDocs --> apiGateway
+
+  apiGateway --> docSvc
+  apiGateway --> txnSvc
+  apiGateway --> anomSvc
+  apiGateway --> aiSvc
+
+  docSvc --> dbDocs
+  docSvc --> dbDocTxn
+  txnSvc --> dbLiveTxn
+  anomSvc --> dbAnom
+  anomSvc --> dbRisk
+  aiSvc --> dbDocs
+  aiSvc --> dbDocTxn
+  aiSvc --> dbAnom
+  aiSvc --> dbLiveTxn
+  aiSvc --> llm
+
+  streamMod --> topicDocUp
+  streamMod --> topicTxnRaw
+
+  topicDocUp --> streamMod
+  topicTxnRaw --> streamMod
+  topicTxnFeat --> streamMod
+  topicFraud --> streamMod
+
+  streamMod --> dbDocTxn
+  streamMod --> dbLiveTxn
+  streamMod --> dbAnom
+  streamMod --> dbRisk

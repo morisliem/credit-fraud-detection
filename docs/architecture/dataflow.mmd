@@ -1,0 +1,45 @@
+flowchart LR
+  subgraph Dataset["Fraud Dataset (CSV)"]
+    CSV["credit_card_fraud.csv"]
+  end
+
+  subgraph Producer["Txn Replay Producer (Node/Python script)"]
+    REPLAY["Read CSV & send events"]
+  end
+
+  subgraph KafkaCluster["Kafka Cluster"]
+    RAW["transactions_raw"]
+    FEAT["transactions_features"]
+    FRAUD["fraud_alerts (optional)"]
+  end
+
+  subgraph Enricher["Stream Enricher Consumer"]
+    FEAT_SVC["Compute rolling features per account"]
+  end
+
+  subgraph FraudEngine["Fraud / Anomaly Engine"]
+    FRAUD_SVC["Apply rules + IsolationForest<br/>write anomalies to DB"]
+  end
+
+  subgraph DB["PostgreSQL"]
+    LIVE_TXN["live_transactions"]
+    ANOM_EVT["anomaly_events (LIVE_STREAM)"]
+  end
+
+  subgraph Frontend["React Live Alerts Page"]
+    UI_ALERTS["Live Alerts View"]
+  end
+
+  CSV --> REPLAY
+  REPLAY --> RAW
+
+  RAW --> FEAT_SVC
+  FEAT_SVC --> FEAT
+  FEAT_SVC --> LIVE_TXN
+
+  FEAT --> FRAUD_SVC
+  FRAUD_SVC --> FRAUD
+  FRAUD_SVC --> ANOM_EVT
+
+  UI_ALERTS -->|poll/WS REST API| DB
+  ANOM_EVT --> UI_ALERTS
