@@ -32,3 +32,6 @@ coverage/
 
 # Docker
 docker-data/
+
+# Local dir for document uploads
+uploads/
