@@ -23,7 +23,11 @@ export class DocumentsService {
             docType
         }
 
-        if (userId) data.userId = userId
+        // Simplified way to assigned document to user (**Updated in the future**)
+        const users = await this.prisma.user.findMany()
+        const user = users[Math.floor(Math.random() * users.length)]
+
+        if (user) data.userId = user.id
         if (sourceDataset) data.sourceDataset = sourceDataset
 
         return this.prisma.document.create({ data })

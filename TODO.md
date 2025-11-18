@@ -9,7 +9,7 @@
 - [X] Create `infra/docker-compose.yml` with:
   - [X] PostgreSQL
   - [X] Kafka (and ZooKeeper or compatible)
-- [ ] Add `.env.example` files (DB URL, Kafka config, AI API key placeholders)
+- [X] Add `.env.example` files (DB URL, Kafka config, AI API key placeholders)
 - [X] Fill out `README.md` and this `TODO.md`
 - [X] Create architecture documentation
 

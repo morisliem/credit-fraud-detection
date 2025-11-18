@@ -22,4 +22,11 @@ export class UserService {
             where: { email }
         })
     }
+
+    async findAll() {
+        const users = await this.prisma.user.findMany({
+            orderBy: { createdAt: 'desc' }
+        })
+        return users
+    }
 }
