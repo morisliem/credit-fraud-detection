@@ -17,14 +17,14 @@
 
 ## Phase 1 – Backend Core (NestJS + Prisma)
 
-- [ ] Implement `PrismaModule` and `PrismaService`
-- [ ] Implement `UsersModule` (minimal, just enough for ownership)
-- [ ] Implement `DocumentsModule`:
-  - [ ] `POST /documents/upload` (multipart file upload)
-  - [ ] `GET /documents` – list documents with basic metadata
-  - [ ] `GET /documents/:id` – fetch document + basic info
-- [ ] Wire NestJS logging and basic error handling
-- [ ] Run Prisma migrations and test DB connection
+- [X] Implement `PrismaModule` and `PrismaService`
+- [X] Implement `UsersModule` (minimal, just enough for ownership)
+- [X] Implement `DocumentsModule`:
+  - [X] `POST /documents/upload` (multipart file upload)
+  - [X] `GET /documents` – list documents with basic metadata
+  - [X] `GET /documents/:id` – fetch document + basic info
+- [X] Wire NestJS logging and basic error handling
+- [X] Run Prisma migrations and test DB connection
 
 ---
 
