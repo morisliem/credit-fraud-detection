@@ -8,6 +8,11 @@ async function bootstrap() {
     logger: ['error', 'warn', 'log', 'debug', 'verbose']
   });
 
+  app.enableCors({
+    origin: 'http://localhost:5173', // Frontend dev server
+    credentials: true
+  })
+
   app.setGlobalPrefix('api')
   app.useGlobalPipes(
     new ValidationPipe({
